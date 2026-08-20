@@ -64,7 +64,7 @@ class CheckoutController extends Controller
                     $produk = Produk::lockForUpdate()->findOrFail($item->produk_id);
 
                     if ($produk->stok < $item->jumlah) {
-                        throw new \Exception("Stok untuk produk '{$produk->nama}' tidak mencukupi.");
+                        throw new \Exception("Stok untuk produk '{$produk->nama_produk}' tidak mencukupi.");
                     }
 
                     $totalHarga += $produk->harga * $item->jumlah;
@@ -80,14 +80,14 @@ class CheckoutController extends Controller
 
                 // 3. Pindahkan item keranjang ke tb_detail_pesanan & Potong stok produk
                 foreach ($keranjang as $item) {
-                    $produk = Produk::findOrFail($item->produk_id);
+                    $produk = $item->produk;
                     $subtotal = $produk->harga * $item->jumlah;
 
                     // Buat detail pesanan
                     DetailPesanan::create([
                         'pesanan_id'   => $pesanan->id,
                         'produk_id'    => $produk->id,
-                        'nama_produk'  => $produk->nama, // Disimpan statis sebagai snapshot riwayat
+                        'nama_produk'  => $produk->nama_produk, // Disimpan statis sebagai snapshot riwayat
                         'harga_satuan' => $produk->harga,
                         'jumlah'       => $item->jumlah,
                         'subtotal'     => $subtotal,

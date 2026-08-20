@@ -72,8 +72,7 @@ class ProdukController extends Controller
         $request->validate([
             'kategori_id' => 'required|exists:tb_kategori,id',
             'brand_id'    => 'nullable|exists:tb_brand,id',
-            'nama'        => 'required|string|max:255',
-            'brand'       => 'nullable|string|max:100',
+            'nama_produk' => 'required|string|max:255',
             'deskripsi'   => 'required|string',
             'harga'       => 'required|numeric|min:0',
             'stok'        => 'required|integer|min:0',
@@ -83,7 +82,7 @@ class ProdukController extends Controller
         $data = [
             'kategori_id' => $request->kategori_id,
             'brand_id'    => $request->brand_id,
-            'nama'        => $request->nama,
+            'nama_produk'        => $request->nama,
             'deskripsi'   => $request->deskripsi,
             'harga'       => $request->harga,
             'stok'        => $request->stok,
@@ -116,5 +115,5 @@ class ProdukController extends Controller
         $produk->delete();
 
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus.');
-    }
+    } 
 }

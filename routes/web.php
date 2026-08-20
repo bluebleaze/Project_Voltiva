@@ -96,9 +96,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
     Route::resource('produk', AdminProdukController::class);
 
     // Kelola Pesanan Masuk
-    Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan.index');
-    Route::get('/pesanan/{id}', [PesananController::class, 'show'])->name('pesanan.show');
-    Route::put('/pesanan/{id}/status', [PesananController::class, 'updateStatus'])->name('pesanan.updateStatus');
+    Route::get('/pesanan', [PesananAdminController::class, 'index'])->name('pesanan.index');
+    Route::get('/pesanan/{id}', [PesananAdminController::class, 'show'])->name('pesanan.show');
+    Route::put('/pesanan/{id}/status', [PesananAdminController::class, 'updateStatus'])->name('pesanan.updateStatus');
 
     // Kelola Kritik & Saran
     Route::get('/saran', [SaranAdminController::class, 'index'])->name('saran.index');

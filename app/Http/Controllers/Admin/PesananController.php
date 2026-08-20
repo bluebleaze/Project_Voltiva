@@ -33,7 +33,14 @@ class PesananController extends Controller
             'status' => 'required|in:pending,diproses,dikirim,selesai,dibatalkan',
         ]);
 
-        $pesanan = Pesanan::findOrFail($id);
+        $pesanan = Pesanan::with('detailPesanan.produk')->findOrFail($id);
+        if ($request->status === 'dibatalkan' && $pesanan->status !== 'dibatalkan') {
+            foreach ($pesanan->detailPesanan as $detail) {
+                if ($detail->produk) {
+                    $detail->produk->increment('stok', $detail->jumlah);
+                }
+            }
+        }
         $pesanan->update([
             'status' => $request->status,
         ]);

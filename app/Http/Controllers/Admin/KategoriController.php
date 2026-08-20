@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class KategoriController extends Controller
 {
@@ -34,6 +35,7 @@ class KategoriController extends Controller
 
         Kategori::create([
             'nama' => $request->nama,
+            'slug' => Str::slug($request->nama),
         ]);
 
         return redirect()->route('admin.kategori.index')
@@ -41,7 +43,7 @@ class KategoriController extends Controller
     }
 
     // Form edit kategori
-    public function edit($id)
+    public function edit(string|int $id)
     {
         $kategori = Kategori::findOrFail($id);
 
@@ -49,7 +51,7 @@ class KategoriController extends Controller
     }
 
     // Memperbarui data kategori
-    public function update(Request $request, $id)
+    public function update(Request $request, string|int $id)
     {
         $kategori = Kategori::findOrFail($id);
 
@@ -62,6 +64,7 @@ class KategoriController extends Controller
 
         $kategori->update([
             'nama' => $request->nama,
+            'slug' => Str::slug($request->nama),
         ]);
 
         return redirect()->route('admin.kategori.index')
@@ -69,7 +72,7 @@ class KategoriController extends Controller
     }
 
     // Menghapus kategori
-    public function destroy($id)
+    public function destroy(string|int $id)
     {
         $kategori = Kategori::withCount('produk')->findOrFail($id);
 

@@ -19,7 +19,7 @@ class KeranjangController extends Controller
 
         // Hitung total harga keseluruhan di keranjang
         $totalHarga = $keranjang->sum(function ($item) {
-            return $item->produk->harga * $item->jumlah;
+            return ($item->produk?->harga ?? 0) * $item->jumlah;
         });
 
         return view('user.keranjang.index', compact('keranjang', 'totalHarga'));
@@ -67,17 +67,18 @@ class KeranjangController extends Controller
     }
 
     // Memperbarui jumlah item di keranjang
-    public function update(Request $request, $id)
+    public function update(Request $request, string|int $id)
     {
         $request->validate([
             'jumlah' => 'required|integer|min:1',
         ]);
 
-        $itemKeranjang = Keranjang::where('pengguna_id', Auth::id())
+        $itemKeranjang = Keranjang::with('produk')
+            ->where('pengguna_id', Auth::id())
             ->findOrFail($id);
-
+            
         // Validasi terhadap stok produk
-        if ($itemKeranjang->produk->stok < $request->jumlah) {
+        if ($itemKeranjang->produk && $itemKeranjang->produk->stok < $request->jumlah) {
             return redirect()->back()->with('error', 'Jumlah melebihi stok yang tersedia.');
         }
 
@@ -89,7 +90,7 @@ class KeranjangController extends Controller
     }
 
     // Menghapus item dari keranjang
-    public function destroy($id)
+    public function destroy(string|int $id)
     {
         $itemKeranjang = Keranjang::where('pengguna_id', Auth::id())
             ->findOrFail($id);
