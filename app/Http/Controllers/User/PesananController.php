@@ -19,9 +19,9 @@ class PesananController extends Controller
     }
 
     // Menampilkan detail invoice/rincian item dari satu pesanan
-    public function show($id)
+    public function show(string|int $id)
     {
-        $pesanan = Pesanan::with('detailPesanan')
+        $pesanan = Pesanan::with(['detailPesanan.produk'])
             ->where('pengguna_id', Auth::id())
             ->findOrFail($id);
 
