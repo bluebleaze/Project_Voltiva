@@ -11,15 +11,21 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // 1. Tambahkan PHPDoc type hint agar VS Code tahu $user adalah instance dari model Pengguna
-        /** @var \App\Models\Pengguna $user */
-        $user = Auth::user();
+        // 1. Cek dulu apakah user sudah login
+        if (Auth::check()) {
+            /** @var \App\Models\Pengguna $user */
+            $user = Auth::user();
 
-        // 2. Lakukan pengecekan menggunakan variabel $user
-        if (Auth::check() && $user->isAdmin()) {
-            return $next($request);
+            // 2. Cek apakah user adalah Admin
+            if ($user->isAdmin()) {
+                return $next($request);
+            }
+
+            // Jika login tapi BUKAN Admin -> lempar ke home
+            return redirect()->route('home')->with('error', 'Anda tidak memiliki hak akses ke halaman Admin.');
         }
 
-        return redirect()->route('home')->with('error', 'Anda tidak memiliki hak akses ke halaman Admin.');
+        // Jika BELUM login sama sekali -> lempar ke login
+        return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
     }
 }
