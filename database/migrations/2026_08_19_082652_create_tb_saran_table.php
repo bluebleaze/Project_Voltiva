@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('tb_saran', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('email');
-            $table->string('subjek')->nullable();
+            $table->unsignedBigInteger('pengguna_id');
             $table->text('pesan');
             $table->boolean('is_dibaca')->default(false);
             $table->timestamps();

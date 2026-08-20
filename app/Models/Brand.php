@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Brand extends Model
+{
+    use HasFactory;
+
+    // Menentukan nama tabel di database
+    protected $table = 'tb_brand';
+
+    // Kolom yang diizinkan untuk diisi secara massal (Mass Assignment)
+    protected $fillable = [
+        'nama_brand',
+        'slug',
+        'logo',
+        'deskripsi',
+    ];
+
+    /**
+     * Relasi One-to-Many ke tabel tb_produk
+     * 1 Brand memiliki banyak Produk
+     */
+    public function produk()
+    {
+        return $this->hasMany(Produk::class, 'brand_id');
+    }
+}

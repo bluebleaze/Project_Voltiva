@@ -17,16 +17,16 @@ class DatabaseSeeder extends Seeder
         Pengguna::create([
             'nama'     => 'Administrator',
             'email'    => 'admin@example.com',
-            'password' => 'password123',
-            'role'     => 'admin',
+            'sandi'    => 'password123',
+            'peran'    => 'admin',
         ]);
 
         // 2. Akun User / Pembeli Contoh
         Pengguna::create([
             'nama'     => 'Pembeli Sampel',
             'email'    => 'user@example.com',
-            'password' => 'password123',
-            'role'     => 'user',
+            'sandi'    => 'password123',
+            'peran'    => 'pengguna',
         ]);
     }
 }

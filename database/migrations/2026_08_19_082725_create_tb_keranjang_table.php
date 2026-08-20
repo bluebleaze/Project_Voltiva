@@ -13,12 +13,8 @@ return new class extends Migration
     {
         Schema::create('tb_keranjang', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengguna_id')
-                  ->constrained('tb_pengguna')
-                  ->onDelete('cascade');
-            $table->foreignId('produk_id')
-                  ->constrained('tb_produk')
-                  ->onDelete('cascade');
+            $table->foreignId('pengguna_id')->constrained('tb_pengguna')->onDelete('cascade');
+            $table->foreignId('produk_id')->constrained('tb_produk')->onDelete('cascade');
             $table->integer('jumlah')->default(1);
             $table->timestamps();
         });

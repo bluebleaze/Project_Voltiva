@@ -15,13 +15,11 @@ return new class extends Migration
         Schema::create('tb_produk', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kategori_id')->nullable()->constrained('tb_kategori')->onDelete('cascade');
-            $table->string('nama');
-            $table->string('brand');
+            $table->string('nama_produk');
             $table->text('deskripsi');
             $table->bigInteger('harga');
             $table->integer('stok')->default(0);
             $table->string('gambar');
-            $table->boolean('is_aktif')->default(true);
             $table->timestamps();
         });
     }

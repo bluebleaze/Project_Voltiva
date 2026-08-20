@@ -13,7 +13,7 @@ class ProdukController extends Controller
     // Tampil seluruh daftar produk admin
     public function index()
     {
-        $produk = Produk::with('kategori')->latest()->paginate(10);
+        $produk = Produk::with(['kategori', 'brand'])->latest()->paginate(10);
         return view('admin.produk.index', compact('produk'));
     }
 
@@ -21,7 +21,8 @@ class ProdukController extends Controller
     public function create()
     {
         $kategori = Kategori::all();
-        return view('admin.produk.create', compact('kategori'));
+        $brand = \App\Models\Brand::all();
+        return view('admin.produk.create', compact('kategori', 'brand'));
     }
 
     // Simpan produk baru ke database
@@ -29,7 +30,8 @@ class ProdukController extends Controller
     {
         $request->validate([
             'kategori_id' => 'required|exists:tb_kategori,id',
-            'nama'        => 'required|string|max:255',
+            'brand_id'    => 'nullable|exists:tb_brand,id',
+            'nama_produk' => 'required|string|max:255',
             'brand'       => 'nullable|string|max:100',
             'deskripsi'   => 'required|string',
             'harga'       => 'required|numeric|min:0',
@@ -42,13 +44,12 @@ class ProdukController extends Controller
 
         Produk::create([
             'kategori_id' => $request->kategori_id,
-            'nama'        => $request->nama,
-            'brand'       => $request->brand,
+            'brand_id'    => $request->brand_id,
+            'nama_produk' => $request->nama_produk,
             'deskripsi'   => $request->deskripsi,
             'harga'       => $request->harga,
             'stok'        => $request->stok,
             'gambar'      => $pathGambar,
-            'is_aktif'    => $request->has('is_aktif') ? true : false,
         ]);
 
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -59,7 +60,8 @@ class ProdukController extends Controller
     {
         $produk = Produk::findOrFail($id);
         $kategori = Kategori::all();
-        return view('admin.produk.edit', compact('produk', 'kategori'));
+        $brand = \App\Models\Brand::all();
+        return view('admin.produk.edit', compact('produk', 'kategori', 'brand'));
     }
 
     // Perbarui data produk
@@ -69,6 +71,7 @@ class ProdukController extends Controller
 
         $request->validate([
             'kategori_id' => 'required|exists:tb_kategori,id',
+            'brand_id'    => 'nullable|exists:tb_brand,id',
             'nama'        => 'required|string|max:255',
             'brand'       => 'nullable|string|max:100',
             'deskripsi'   => 'required|string',
@@ -79,12 +82,11 @@ class ProdukController extends Controller
 
         $data = [
             'kategori_id' => $request->kategori_id,
+            'brand_id'    => $request->brand_id,
             'nama'        => $request->nama,
-            'brand'       => $request->brand,
             'deskripsi'   => $request->deskripsi,
             'harga'       => $request->harga,
             'stok'        => $request->stok,
-            'is_aktif'    => $request->has('is_aktif') ? true : false,
         ];
 
         // Jika ada gambar baru yang diunggah

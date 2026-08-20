@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('email')->unique();
-            $table->string('password');
-            $table->string('phone_number')->nullable();
-            $table->text('address')->nullable();
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->string('sandi');
+            $table->string('nomor_telepon')->nullable();
+            $table->text('alamat')->nullable();
+            $table->enum('peran', ['admin', 'pengguna'])->default('pengguna');
             $table->timestamps();
         });
     }
