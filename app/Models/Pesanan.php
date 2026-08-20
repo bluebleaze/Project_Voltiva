@@ -18,6 +18,10 @@ class Pesanan extends Model
         'status',
     ];
 
+    protected $casts = [
+        'total_harga' => 'integer',
+    ];
+    
     // Relasi: Pesanan dibuat oleh seorang Pengguna
     public function pengguna()
     {

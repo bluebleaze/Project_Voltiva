@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('sandi');
+            $table->rememberToken();
             $table->string('nomor_telepon')->nullable();
             $table->text('alamat')->nullable();
             $table->enum('peran', ['admin', 'pengguna'])->default('pengguna');

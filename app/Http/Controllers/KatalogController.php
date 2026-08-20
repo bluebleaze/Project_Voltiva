@@ -14,17 +14,18 @@ class KatalogController extends Controller
         $kategori = Kategori::all();
 
         // Query dasar: hanya mengambil produk yang aktif
-        $query = Produk::with('kategori')->where('is_aktif', true);
+        $query = Produk::with('kategori');
 
         // Filter berdasarkan pencarian nama atau brand
         if ($request->filled('q')) {
             $keyword = $request->q;
             $query->where(function ($q) use ($keyword) {
-                $q->where('nama', 'like', "%{$keyword}%")
-                  ->orWhere('brand', 'like', "%{$keyword}%");
-            });
-        }
-
+                $q->where('nama_produk', 'like', "%{$keyword}%")
+                    ->orWhereHas('brand', function ($b) use ($keyword) {
+                        $b->where('nama_brand', 'like', "%{$keyword}%");
+        });
+    });
+} 
         // Filter berdasarkan kategori tertentu
         if ($request->filled('kategori')) {
             $query->where('kategori_id', $request->kategori);
@@ -37,16 +38,15 @@ class KatalogController extends Controller
     }
 
     // Menampilkan halaman detail dari satu produk
-    public function show($id)
+    public function show(string|int $id)
     {
-        $produk = Produk::with('kategori')
-            ->where('is_aktif', true)
+        $produk = Produk::with(['kategori', 'brand'])
             ->findOrFail($id);
 
         // Rekomendasi produk terkait (kategori sama, kecuali produk yang sedang dilihat)
         $produkTerkait = Produk::where('kategori_id', $produk->kategori_id)
             ->where('id', '!=', $produk->id)
-            ->where('is_aktif', true)
+            ->latest()
             ->take(4)
             ->get();
 

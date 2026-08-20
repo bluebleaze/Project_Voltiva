@@ -17,6 +17,11 @@ class Keranjang extends Model
         'jumlah',
     ];
 
+    // Mengonversi tipe data otomatis
+    protected $casts = [
+        'jumlah' => 'integer',
+    ];
+    
     // Relasi: Item keranjang milik seorang Pengguna
     public function pengguna()
     {

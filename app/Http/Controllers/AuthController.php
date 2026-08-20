@@ -19,23 +19,23 @@ class AuthController extends Controller
     {
         $request->validate([
             'email'    => 'required|email',
-            'password' => 'required',
+            'sandi' => 'required',
         ], [
             'email.required'    => 'Email wajib diisi.',
             'email.email'       => 'Format email tidak valid.',
-            'password.required' => 'Password wajib diisi.',
+            'sandi.required' => 'Password wajib diisi.',
         ]);
 
         // Cari pengguna berdasarkan email dan password teks biasa
-        $user = Pengguna::where('email', $request->email)
-                        ->where('password', $request->password)
+        $pengguna = Pengguna::where('email', $request->email)
+                        ->where('sandi', $request->sandi)
                         ->first();
 
-        if ($user) {
-            Auth::login($user);
+        if ($pengguna) {
+            Auth::login($pengguna);
             $request->session()->regenerate();
 
-            if ($user->isAdmin()) {
+            if ($pengguna->isAdmin()) {
                 return redirect()->intended('/admin/dashboard');
             }
 
@@ -59,24 +59,24 @@ class AuthController extends Controller
         $request->validate([
             'nama'     => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:tb_pengguna,email',
-            'password' => 'required|string|min:8|confirmed',
+            'sandi' => 'required|string|min:8|confirmed',
         ], [
             'nama.required'     => 'Nama lengkap wajib diisi.',
             'email.required'    => 'Email wajib diisi.',
             'email.unique'      => 'Email sudah terdaftar.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min'      => 'Password minimal 8 karakter.',
-            'password.confirmed'=> 'Konfirmasi password tidak cocok.',
+            'sandi.required'    => 'Sandi wajib diisi.',
+            'sandi.min'         => 'Sandi minimal 8 karakter.',
+            'sandi.confirmed'   => 'Konfirmasi sandi tidak cocok.',
         ]);
 
-        $user = Pengguna::create([
+        $pengguna = Pengguna::create([
             'nama'     => $request->nama,
             'email'    => $request->email,
-            'password' => $request->password, // Teks biasa
-            'role'     => 'user',
+            'sandi'    => $request->sandi,
+            'peran'    => 'pengguna',
         ]);
 
-        Auth::login($user);
+        Auth::login($pengguna);
 
         return redirect('/')->with('success', 'Pendaftaran berhasil!');
     }

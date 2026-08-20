@@ -15,6 +15,7 @@ use App\Http\Controllers\User\SaranController;
 
 // Import Controller Admin
 use App\Http\Controllers\Admin\KategoriController as AdminKategoriController;
+use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\ProdukController as AdminProdukController;
 use App\Http\Controllers\Admin\PesananController as PesananAdminController;
 use App\Http\Controllers\Admin\SaranAdminController;

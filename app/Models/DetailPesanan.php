@@ -20,6 +20,13 @@ class DetailPesanan extends Model
         'subtotal',
     ];
 
+    // Mengonversi tipe data secara otomatis
+    protected $casts = [
+        'harga_satuan' => 'integer',
+        'jumlah'       => 'integer',
+        'subtotal'     => 'integer',
+    ];
+    
     // Relasi: Detail pesanan merujuk ke induk Pesanan
     public function pesanan()
     {

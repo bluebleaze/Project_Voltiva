@@ -12,8 +12,7 @@ class HomeController extends Controller
         // Ambil kategori untuk navigasi/shortcut di landing page
         $kategori = Kategori::all();
 
-        // Ambil 8 produk terbaru yang berstatus aktif
-        $produkTerbaru = Produk::where('is_aktif', true)
+        $produkTerbaru = Produk::with('kategori')
             ->latest()
             ->take(8)
             ->get();

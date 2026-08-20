@@ -12,8 +12,14 @@ class Saran extends Model
     protected $table = 'tb_saran';
 
     protected $fillable = [
+        'pengguna_id',
         'nama',
         'email',
         'pesan',
     ];
+
+    public function pengguna()
+    {
+        return $this->belongsTo(Pengguna::class, 'pengguna_id');
+    }
 }

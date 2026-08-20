@@ -13,21 +13,27 @@ class Pengguna extends Authenticatable
     protected $table = 'tb_pengguna';
 
     protected $fillable = [
-        'name',
+        'nama',
         'email',
-        'password',
-        'phone_number',
-        'address',
-        'role',
+        'sandi',
+        'nomor_telepon',
+        'alamat',
+        'peran',
     ];
 
     protected $hidden = [
-        'password',
+        'sandi',
+        'remember_token',
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->sandi;
+    }
 
     public function isAdmin(): bool
 {
-    return $this->role === 'admin';
+    return $this->peran === 'admin';
 }
 
     protected function casts(): array
