@@ -9,10 +9,7 @@ class Brand extends Model
 {
     use HasFactory;
 
-    // Menentukan nama tabel di database
     protected $table = 'tb_brand';
-
-    // Kolom yang diizinkan untuk diisi secara massal (Mass Assignment)
     protected $fillable = [
         'nama_brand',
         'slug',

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tb_saran', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('pengguna_id');
+            $table->foreignId('pengguna_id')->constrained('tb_pengguna')->onDelete('cascade');
             $table->text('pesan');
             $table->boolean('is_dibaca')->default(false);
             $table->timestamps();
