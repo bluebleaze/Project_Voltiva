@@ -31,7 +31,7 @@ class ProdukController extends Controller
     {
         $request->validate([
             'kategori_id'        => 'required|exists:tb_kategori,id',
-            'brand_id'           => 'nullable|exists:tb_brand,id',
+            'brand_id'           => 'required|exists:tb_brand,id',
             'nama_produk'        => 'required|string|max:255',
             'deskripsi_produk'   => 'required|string',
             'harga'              => 'required|numeric|min:0',
@@ -68,7 +68,7 @@ class ProdukController extends Controller
     {
         $request->validate([
             'kategori_id'        => 'required|exists:tb_kategori,id',
-            'brand_id'           => 'nullable|exists:tb_brand,id',
+            'brand_id'           => 'required|exists:tb_brand,id',
             'nama_produk'        => 'required|string|max:255',
             'deskripsi_produk'   => 'required|string',
             'harga'              => 'required|numeric|min:0',

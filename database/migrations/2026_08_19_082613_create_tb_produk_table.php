@@ -14,7 +14,8 @@ return new class extends Migration
     {
         Schema::create('tb_produk', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('kategori_id')->nullable()->constrained('tb_kategori')->onDelete('cascade');
+            $table->foreignId('kategori_id')->constrained('tb_kategori')->onDelete('cascade');
+            $table->foreignId('brand_id')->constrained('tb_brand')->onDelete('cascade');
             $table->string('nama_produk');
             $table->text('deskripsi_produk');
             $table->bigInteger('harga');

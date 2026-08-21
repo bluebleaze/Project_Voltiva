@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Kategori;
 use App\Models\Produk;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ class KatalogController extends Controller
     public function index(Request $request)
     {
         $kategori = Kategori::all();
+        $brand    = Brand::all();
 
         // Query dasar: hanya mengambil produk yang aktif
         $query = Produk::with(['kategori', 'brand']);
