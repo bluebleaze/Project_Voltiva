@@ -16,16 +16,16 @@ class DatabaseSeeder extends Seeder
         // 1. Akun Admin Utama
         Pengguna::create([
             'nama'     => 'Administrator',
-            'email'    => 'admin@example.com',
-            'sandi'    => 'password123',
+            'email'    => 'admin@contoh',
+            'sandi'    => 'sandi123',
             'peran'    => 'admin',
         ]);
 
         // 2. Akun User / Pembeli Contoh
         Pengguna::create([
             'nama'     => 'Pembeli Sampel',
-            'email'    => 'user@example.com',
-            'sandi'    => 'password123',
+            'email'    => 'pengguna@contoh',
+            'sandi'    => 'sandi123',
             'peran'    => 'pengguna',
         ]);
     }
