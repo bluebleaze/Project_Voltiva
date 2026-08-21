@@ -13,9 +13,12 @@ class Saran extends Model
 
     protected $fillable = [
         'pengguna_id',
-        'nama',
-        'email',
         'pesan',
+        'is_dibaca'
+    ];
+
+    protected $casts = [
+        'is_dibaca' => 'boolean',
     ];
 
     public function pengguna()
