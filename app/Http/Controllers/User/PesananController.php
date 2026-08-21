@@ -19,11 +19,13 @@ class PesananController extends Controller
     }
 
     // Menampilkan detail invoice/rincian item dari satu pesanan
-    public function show(string|int $id)
+    public function show(Pesanan $pesanan)
     {
-        $pesanan = Pesanan::with(['detailPesanan.produk'])
-            ->where('pengguna_id', Auth::id())
-            ->findOrFail($id);
+        if ($pesanan->pengguna_id !== Auth::id()) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $pesanan->load(['detailPesanan.produk']);
 
         return view('user.pesanan.show', compact('pesanan'));
     }

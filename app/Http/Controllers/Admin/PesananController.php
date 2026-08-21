@@ -19,28 +19,34 @@ class PesananController extends Controller
     }
 
     // Menampilkan rincian detail pesanan pembeli
-    public function show(string|int $id)
+    public function show(Pesanan $pesanan)
     {
-        $pesanan = Pesanan::with(['pengguna', 'detailPesanan'])->findOrFail($id);
+        $pesanan->load(['pengguna', 'detailPesanan.produk']);
 
         return view('admin.pesanan.show', compact('pesanan'));
     }
 
     // Perbarui status pesanan (misal: pending, diproses, dikirim, selesai, dibatalkan)
-    public function updateStatus(Request $request, string|int $id)
+    public function updateStatus(Request $request, Pesanan $pesanan)
     {
         $request->validate([
             'status' => 'required|in:pending,diproses,dikirim,selesai,dibatalkan',
         ]);
 
-        $pesanan = Pesanan::with('detailPesanan.produk')->findOrFail($id);
-        if ($request->status === 'dibatalkan' && $pesanan->status !== 'dibatalkan') {
+        if (in_array($pesanan->status, ['selesai', 'dibatalkan'])) {
+            return redirect()->back()->with('error', 'Pesanan yang sudah selesai atau dibatalkan tidak dapat diubah statusnya.');
+        }
+
+        if ($request->status === 'dibatalkan') {
+            $pesanan->load('detailPesanan.produk');
+            
             foreach ($pesanan->detailPesanan as $detail) {
                 if ($detail->produk) {
                     $detail->produk->increment('stok', $detail->jumlah);
                 }
             }
         }
+
         $pesanan->update([
             'status' => $request->status,
         ]);

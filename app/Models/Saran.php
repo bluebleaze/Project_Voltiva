@@ -14,7 +14,7 @@ class Saran extends Model
     protected $fillable = [
         'pengguna_id',
         'pesan',
-        'is_dibaca'
+        'is_dibaca',
     ];
 
     protected $casts = [

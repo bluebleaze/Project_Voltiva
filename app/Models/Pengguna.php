@@ -52,4 +52,10 @@ class Pengguna extends Authenticatable
     {
         return $this->hasMany(Pesanan::class, 'pengguna_id');
     }
+
+    // Relasi: Pengguna bisa mengirimkan banyak saran
+    public function saran()
+    {
+        return $this->hasMany(Saran::class, 'pengguna_id');
+    }
 }

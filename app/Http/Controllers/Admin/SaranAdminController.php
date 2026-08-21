@@ -18,9 +18,9 @@ class SaranAdminController extends Controller
     }
 
     // Menampilkan detail saran dan otomatis menandai sudah dibaca
-    public function show(string|int $id)
+    public function show(Saran $saran)
     {
-        $saran = Saran::with('pengguna')->findOrFail($id);
+        $saran->load('pengguna');
 
         // Tandai saran sebagai 'sudah dibaca' jika belum dibaca
         if (!$saran->is_dibaca) {
@@ -31,9 +31,8 @@ class SaranAdminController extends Controller
     }
     
     // Menghapus data saran
-    public function destroy(string|int $id)
+    public function destroy(Saran $saran)
     {
-        $saran = Saran::findOrFail($id);
         $saran->delete();
 
         return redirect()->back()->with('success', 'Pesan saran berhasil dihapus.');

@@ -67,22 +67,24 @@ class KeranjangController extends Controller
     }
 
     // Memperbarui jumlah item di keranjang
-    public function update(Request $request, string|int $id)
+    public function update(Request $request, Keranjang $keranjang)
     {
+        if ($keranjang->pengguna_id !== Auth::id()) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
         $request->validate([
             'jumlah' => 'required|integer|min:1',
         ]);
 
-        $itemKeranjang = Keranjang::with('produk')
-            ->where('pengguna_id', Auth::id())
-            ->findOrFail($id);
+        $keranjang->load('produk');
             
         // Validasi terhadap stok produk
-        if ($itemKeranjang->produk && $itemKeranjang->produk->stok < $request->jumlah) {
+        if ($keranjang->produk && $keranjang->produk->stok < $request->jumlah) {
             return redirect()->back()->with('error', 'Jumlah melebihi stok yang tersedia.');
         }
 
-        $itemKeranjang->update([
+        $keranjang->update([
             'jumlah' => $request->jumlah,
         ]);
 
@@ -90,12 +92,13 @@ class KeranjangController extends Controller
     }
 
     // Menghapus item dari keranjang
-    public function destroy(string|int $id)
+    public function destroy(Keranjang $keranjang)
     {
-        $itemKeranjang = Keranjang::where('pengguna_id', Auth::id())
-            ->findOrFail($id);
+        if ($keranjang->pengguna_id !== Auth::id()) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
 
-        $itemKeranjang->delete();
+        $keranjang->delete();
 
         return redirect()->back()->with('success', 'Item berhasil dihapus dari keranjang.');
     }

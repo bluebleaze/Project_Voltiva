@@ -59,6 +59,8 @@ class CheckoutController extends Controller
 
                 // 1. Validasi stok akhir & Hitung total harga
                 $totalHarga = 0;
+                $produkList = [];
+
                 foreach ($keranjang as $item) {
                     // Kunci data produk untuk menghindari race condition
                     $produk = Produk::lockForUpdate()->findOrFail($item->produk_id);
@@ -68,6 +70,11 @@ class CheckoutController extends Controller
                     }
 
                     $totalHarga += $produk->harga * $item->jumlah;
+
+                    $produkList[] = [
+                        'produk' => $produk,
+                        'jumlah' => $item->jumlah,
+                    ];
                 }
 
                 // 2. Buat data Induk Pesanan di tb_pesanan
@@ -75,26 +82,27 @@ class CheckoutController extends Controller
                     'pengguna_id'       => $penggunaId,
                     'total_harga'       => $totalHarga,
                     'alamat_pengiriman' => $request->alamat_pengiriman,
-                    'status'            => 'pending', // Status awal pesanan
+                    'status'            => 'pending', 
                 ]);
 
                 // 3. Pindahkan item keranjang ke tb_detail_pesanan & Potong stok produk
-                foreach ($keranjang as $item) {
-                    $produk = $item->produk;
-                    $subtotal = $produk->harga * $item->jumlah;
+                foreach ($produkList as $data) {
+                    $produk = $data['produk'];
+                    $jumlah = $data['jumlah'];
+                    $subtotal = $produk->harga * $jumlah;
 
                     // Buat detail pesanan
                     DetailPesanan::create([
                         'pesanan_id'   => $pesanan->id,
                         'produk_id'    => $produk->id,
-                        'nama_produk'  => $produk->nama_produk, // Disimpan statis sebagai snapshot riwayat
+                        'nama_produk'  => $produk->nama_produk,
                         'harga_satuan' => $produk->harga,
-                        'jumlah'       => $item->jumlah,
+                        'jumlah'       => $jumlah,
                         'subtotal'     => $subtotal,
                     ]);
 
                     // Kurangi stok produk di katalog
-                    $produk->decrement('stok', $item->jumlah);
+                    $produk->decrement('stok', $jumlah);
                 }
 
                 // 4. Bersihkan keranjang belanja pengguna

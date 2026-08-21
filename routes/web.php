@@ -47,7 +47,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
-Route::get('/katalog/{id}', [KatalogController::class, 'show'])->name('katalog.show');
+Route::get('/katalog/{produk}', [KatalogController::class, 'show'])->name('katalog.show');
 
 
 /*
@@ -60,8 +60,8 @@ Route::middleware(['auth'])->group(function () {
     // Manajemen Keranjang Belanja
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
     Route::post('/keranjang', [KeranjangController::class, 'store'])->name('keranjang.store');
-    Route::put('/keranjang/{id}', [KeranjangController::class, 'update'])->name('keranjang.update');
-    Route::delete('/keranjang/{id}', [KeranjangController::class, 'destroy'])->name('keranjang.destroy');
+    Route::put('/keranjang/{keranjang}', [KeranjangController::class, 'update'])->name('keranjang.update');
+    Route::delete('/keranjang/{keranjang}', [KeranjangController::class, 'destroy'])->name('keranjang.destroy');
 
     // Transaksi Checkout
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Riwayat & Detail Pesanan User
     Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan.index');
-    Route::get('/pesanan/{id}', [PesananController::class, 'show'])->name('pesanan.show');
+    Route::get('/pesanan/{pesanan}', [PesananController::class, 'show'])->name('pesanan.show');
 
     // Kirim Kritik & Saran
     Route::get('/saran', [SaranController::class, 'create'])->name('saran.create');
@@ -98,11 +98,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->as('admin.')->group(funct
 
     // Kelola Pesanan Masuk
     Route::get('/pesanan', [PesananAdminController::class, 'index'])->name('pesanan.index');
-    Route::get('/pesanan/{id}', [PesananAdminController::class, 'show'])->name('pesanan.show');
-    Route::put('/pesanan/{id}/status', [PesananAdminController::class, 'updateStatus'])->name('pesanan.updateStatus');
+    Route::get('/pesanan/{pesanan}', [PesananAdminController::class, 'show'])->name('pesanan.show');
+    Route::put('/pesanan/{pesanan}/status', [PesananAdminController::class, 'updateStatus'])->name('pesanan.updateStatus');
 
     // Kelola Kritik & Saran
     Route::get('/saran', [SaranAdminController::class, 'index'])->name('saran.index');
-    Route::delete('/saran/{id}', [SaranAdminController::class, 'destroy'])->name('saran.destroy');
+    Route::delete('/saran/{saran}', [SaranAdminController::class, 'destroy'])->name('saran.destroy');
 
 });

@@ -19,12 +19,12 @@ class SaranController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pesan'  => 'required|string|min:10',
+            'pesan'  => 'required|string|min:10|max:1000',
         ]);
 
         Saran::create([
-            'pengguna_id' => Auth::id(), // Mengambil ID user yang sedang login
-            'pesan'       => $request->pesan,
+            'pengguna_id' => Auth::id(),
+            'pesan'       => trim($request->pesan),
             'is_dibaca'   => false,
         ]);
 

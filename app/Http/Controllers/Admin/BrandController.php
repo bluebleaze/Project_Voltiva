@@ -39,19 +39,16 @@ class BrandController extends Controller
     }
 
     // 4. Tampilkan Form Edit Brand
-    public function edit(string|int $id)
+    public function edit(Brand $brand)
     {
-        $brand = Brand::findOrFail($id);
         return view('admin.brand.edit', compact('brand'));
     }
 
     // 5. Perbarui Data Brand
-    public function update(Request $request, string|int $id)
+    public function update(Request $request, Brand $brand)
     {
-        $brand = Brand::findOrFail($id);
-
         $request->validate([
-            'nama_brand' => 'required|string|max:255|unique:tb_brand,nama_brand,' . $id,
+            'nama_brand' => 'required|string|max:255|unique:tb_brand,nama_brand,' . $brand->id,
         ]);
 
         $brand->update([
@@ -64,9 +61,12 @@ class BrandController extends Controller
     }
 
     // 6. Hapus Brand
-    public function destroy(string|int $id)
+    public function destroy(Brand $brand)
     {
-        $brand = Brand::findOrFail($id);
+        if ($brand->produk()->count() > 0) {
+            return redirect()->route('admin.brand.index')
+                ->with('error', 'Brand tidak dapat dihapus karena masih memiliki produk terkait!');
+        }
         $brand->delete();
 
         return redirect()->route('admin.brand.index')

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Kategori;
 use App\Models\Produk;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class ProdukController extends Controller
     public function create()
     {
         $kategori = Kategori::all();
-        $brand = \App\Models\Brand::all();
+        $brand = Brand::all();
         return view('admin.produk.create', compact('kategori', 'brand'));
     }
 
@@ -29,63 +30,59 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kategori_id' => 'required|exists:tb_kategori,id',
-            'brand_id'    => 'nullable|exists:tb_brand,id',
-            'nama_produk' => 'required|string|max:255',
-            'brand'       => 'nullable|string|max:100',
-            'deskripsi'   => 'required|string',
-            'harga'       => 'required|numeric|min:0',
-            'stok'        => 'required|integer|min:0',
-            'gambar'      => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'kategori_id'        => 'required|exists:tb_kategori,id',
+            'brand_id'           => 'nullable|exists:tb_brand,id',
+            'nama_produk'        => 'required|string|max:255',
+            'deskripsi_produk'   => 'required|string',
+            'harga'              => 'required|numeric|min:0',
+            'stok'               => 'required|integer|min:0',
+            'gambar'             => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         // Upload gambar ke folder storage/app/public/produk
         $pathGambar = $request->file('gambar')->store('produk', 'public');
 
         Produk::create([
-            'kategori_id' => $request->kategori_id,
-            'brand_id'    => $request->brand_id,
-            'nama_produk' => $request->nama_produk,
-            'deskripsi'   => $request->deskripsi,
-            'harga'       => $request->harga,
-            'stok'        => $request->stok,
-            'gambar'      => $pathGambar,
+            'kategori_id'        => $request->kategori_id,
+            'brand_id'           => $request->brand_id,
+            'nama_produk'        => $request->nama_produk,
+            'deskripsi_produk'   => $request->deskripsi_produk,
+            'harga'              => $request->harga,
+            'stok'               => $request->stok,
+            'gambar'             => $pathGambar,
         ]);
 
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     // Form edit produk
-    public function edit(string|int $id)
+    public function edit(Produk $produk)
     {
-        $produk = Produk::findOrFail($id);
         $kategori = Kategori::all();
-        $brand = \App\Models\Brand::all();
+        $brand = Brand::all();
         return view('admin.produk.edit', compact('produk', 'kategori', 'brand'));
     }
 
     // Perbarui data produk
-    public function update(Request $request, string|int $id)
+    public function update(Request $request, Produk $produk)
     {
-        $produk = Produk::findOrFail($id);
-
         $request->validate([
-            'kategori_id' => 'required|exists:tb_kategori,id',
-            'brand_id'    => 'nullable|exists:tb_brand,id',
-            'nama_produk' => 'required|string|max:255',
-            'deskripsi'   => 'required|string',
-            'harga'       => 'required|numeric|min:0',
-            'stok'        => 'required|integer|min:0',
-            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'kategori_id'        => 'required|exists:tb_kategori,id',
+            'brand_id'           => 'nullable|exists:tb_brand,id',
+            'nama_produk'        => 'required|string|max:255',
+            'deskripsi_produk'   => 'required|string',
+            'harga'              => 'required|numeric|min:0',
+            'stok'               => 'required|integer|min:0',
+            'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $data = [
-            'kategori_id' => $request->kategori_id,
-            'brand_id'    => $request->brand_id,
-            'nama_produk'        => $request->nama,
-            'deskripsi'   => $request->deskripsi,
-            'harga'       => $request->harga,
-            'stok'        => $request->stok,
+            'kategori_id'        => $request->kategori_id,
+            'brand_id'           => $request->brand_id,
+            'nama_produk'        => $request->nama_produk,
+            'deskripsi_produk'   => $request->deskripsi_produk,
+            'harga'              => $request->harga,    
+            'stok'               => $request->stok,
         ];
 
         // Jika ada gambar baru yang diunggah
@@ -103,10 +100,8 @@ class ProdukController extends Controller
     }
 
     // Hapus produk
-    public function destroy(string|int $id)
+    public function destroy(Produk $produk)
     {
-        $produk = Produk::findOrFail($id);
-
         // Hapus file gambar dari storage
         if ($produk->gambar && Storage::disk('public')->exists($produk->gambar)) {
             Storage::disk('public')->delete($produk->gambar);

@@ -27,15 +27,15 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:100|unique:tb_kategori,nama',
+            'nama_kategori' => 'required|string|max:100|unique:tb_kategori,nama_kategori',
         ], [
-            'nama.required' => 'Nama kategori wajib diisi.',
-            'nama.unique'   => 'Nama kategori sudah ada.',
+            'nama_kategori.required' => 'Nama kategori wajib diisi.',
+            'nama_kategori.unique'   => 'Nama kategori sudah ada.',
         ]);
 
         Kategori::create([
-            'nama' => $request->nama,
-            'slug' => Str::slug($request->nama),
+            'nama_kategori' => $request->nama_kategori,
+            'slug'          => Str::slug($request->nama_kategori),
         ]);
 
         return redirect()->route('admin.kategori.index')
@@ -43,28 +43,24 @@ class KategoriController extends Controller
     }
 
     // Form edit kategori
-    public function edit(string|int $id)
+    public function edit(Kategori $kategori)
     {
-        $kategori = Kategori::findOrFail($id);
-
         return view('admin.kategori.edit', compact('kategori'));
     }
 
     // Memperbarui data kategori
-    public function update(Request $request, string|int $id)
+    public function update(Request $request, Kategori $kategori)
     {
-        $kategori = Kategori::findOrFail($id);
-
         $request->validate([
-            'nama' => 'required|string|max:100|unique:tb_kategori,nama,' . $id,
+            'nama_kategori' => 'required|string|max:100|unique:tb_kategori,nama_kategori,' . $kategori->id,
         ], [
-            'nama.required' => 'Nama kategori wajib diisi.',
-            'nama.unique'   => 'Nama kategori sudah digunakan.',
+            'nama_kategori.required' => 'Nama kategori wajib diisi.',
+            'nama_kategori.unique'   => 'Nama kategori sudah digunakan.',
         ]);
 
         $kategori->update([
-            'nama' => $request->nama,
-            'slug' => Str::slug($request->nama),
+            'nama_kategori' => $request->nama_kategori,
+            'slug' => Str::slug($request->nama_kategori),
         ]);
 
         return redirect()->route('admin.kategori.index')
@@ -72,12 +68,10 @@ class KategoriController extends Controller
     }
 
     // Menghapus kategori
-    public function destroy(string|int $id)
+    public function destroy(Kategori $kategori)
     {
-        $kategori = Kategori::withCount('produk')->findOrFail($id);
-
         // Mencegah penghapusan jika masih ada produk yang terkait
-        if ($kategori->produk_count > 0) {
+        if ($kategori->produk()->exists()) {
             return redirect()->back()
                 ->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh beberapa produk.');
         }
