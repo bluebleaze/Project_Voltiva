@@ -15,18 +15,18 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Akun Admin Utama
         Pengguna::create([
-            'nama'     => 'Administrator',
-            'email'    => 'admin@contoh',
-            'sandi'    => 'sandi123',
-            'peran'    => 'admin',
+            'nama_lengkap'     => 'Administrator',
+            'email'            => 'admin@contoh',
+            'sandi'            => 'sandi123',
+            'peran'            => 'admin',
         ]);
 
         // 2. Akun User / Pembeli Contoh
         Pengguna::create([
-            'nama'     => 'Pembeli Sampel',
-            'email'    => 'pengguna@contoh',
-            'sandi'    => 'sandi123',
-            'peran'    => 'pengguna',
+            'nama_lengkap'     => 'Pembeli Sampel',
+            'email'            => 'pengguna@contoh',
+            'sandi'            => 'sandi123',
+            'peran'            => 'pengguna',
         ]);
     }
 }
