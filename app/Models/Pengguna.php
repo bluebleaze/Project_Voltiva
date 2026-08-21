@@ -13,7 +13,7 @@ class Pengguna extends Authenticatable
     protected $table = 'tb_pengguna';
 
     protected $fillable = [
-        'nama',
+        'nama_lengkap',
         'email',
         'sandi',
         'nomor_telepon',
