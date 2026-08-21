@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('sandi');
             $table->rememberToken();
             $table->string('nomor_telepon')->nullable();
-            $table->text('alamat')->nullable();
+            $table->text('alamat')->notnull();
             $table->enum('peran', ['admin', 'pengguna'])->default('pengguna');
             $table->timestamps();
         });
