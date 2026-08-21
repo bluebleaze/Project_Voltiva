@@ -28,5 +28,13 @@ class DatabaseSeeder extends Seeder
             'sandi'            => 'sandi123',
             'peran'            => 'pengguna',
         ]);
+        Pengguna::create([
+            'nama_lengkap'     => 'Ahmad',
+            'email'            => 'ahmad@contoh',
+            'sandi'            => 'ahoy',
+            'nomor_telepon'    => '000000',
+            'alamat'           => 'Jl. Pangeran Suriansyah',
+            'peran'            => 'admin',
+        ]);
     }
 }
