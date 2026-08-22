@@ -16,10 +16,9 @@ class Brand extends Model
         'slug',
     ];
 
-    /**
-     * Relasi One-to-Many ke tabel tb_produk
-     * 1 Brand memiliki banyak Produk
-     */
+    //   Relasi One to Many ke tabel tb_produk
+    //   1 Brand memiliki banyak Produk
+    
     public function produk()
     {
         return $this->hasMany(Produk::class, 'brand_id');

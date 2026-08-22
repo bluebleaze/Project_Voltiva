@@ -26,34 +26,31 @@ class Pengguna extends Authenticatable
         'remember_token',
     ];
 
+    // Memberitahu Laravel bahwa kolom password pada tabel menggunakan nama 'sandi'.
     public function getAuthPassword()
     {
         return $this->sandi;
     }
 
+    // Memeriksa apakah pengguna memiliki peran sebagai admin.
     public function isAdmin(): bool
-{
-    return $this->peran === 'admin';
-}
-
-    protected function casts(): array
     {
-        return [];
+    return $this->peran === 'admin';
     }
 
-    // Relasi: Pengguna bisa memiliki banyak isi keranjang
+    // Relasi Pengguna bisa memiliki banyak isi keranjang
     public function keranjang()
     {
         return $this->hasMany(Keranjang::class, 'pengguna_id');
     }
 
-    // Relasi: Pengguna bisa memiliki banyak pesanan
+    // Relasi Pengguna bisa memiliki banyak pesanan
     public function pesanan()
     {
         return $this->hasMany(Pesanan::class, 'pengguna_id');
     }
 
-    // Relasi: Pengguna bisa mengirimkan banyak saran
+    // Relasi Pengguna bisa mengirimkan banyak saran
     public function saran()
     {
         return $this->hasMany(Saran::class, 'pengguna_id');

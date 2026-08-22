@@ -27,25 +27,25 @@ class Produk extends Model
     ];
 
     
-    // Relasi: Produk milik satu Kategori
+    // Relasi Produk milik satu Kategori
     public function kategori()
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
-    // Relasi: Produk milik satu Brand (tabel tb_brand)
+    // Relasi Produk milik satu Brand (tabel tb_brand)
     public function brand()
     {
         return $this->belongsTo(Brand::class, 'brand_id');
     }
 
-    // Relasi: Produk bisa ada di banyak keranjang belanja
+    // Relasi Produk bisa ada di banyak keranjang belanja
     public function keranjang()
     {
         return $this->hasMany(Keranjang::class, 'produk_id');
     }
 
-    // Relasi: Produk bisa tercatat di banyak detail pesanan
+    // Relasi Produk bisa tercatat di banyak detail pesanan
     public function detailPesanan()
     {
         return $this->hasMany(DetailPesanan::class, 'produk_id');
