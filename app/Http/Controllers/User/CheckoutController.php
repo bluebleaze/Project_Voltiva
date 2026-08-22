@@ -40,6 +40,9 @@ class CheckoutController extends Controller
     {
         $request->validate([
             'alamat_pengiriman' => 'required|string|max:500',
+        ], [
+    'alamat_pengiriman.required' => 'Alamat pengiriman wajib diisi.',
+    'alamat_pengiriman.max'      => 'Alamat pengiriman terlalu panjang (maksimal 500 karakter).',
         ]);
 
         $penggunaId = Auth::id();
