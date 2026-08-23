@@ -32,10 +32,4 @@ class DetailPesanan extends Model
     {
         return $this->belongsTo(Pesanan::class, 'pesanan_id');
     }
-
-    // Relasi Detail pesanan merujuk ke Produk asli (bisa null jika produk dihapus)
-    public function produk()
-    {
-        return $this->belongsTo(Produk::class, 'produk_id');
-    }
 }
