@@ -20,7 +20,8 @@ return new class extends Migration
             $table->text('deskripsi_produk');
             $table->bigInteger('harga');
             $table->integer('stok')->default(0);
-            $table->string('gambar');
+            $table->string('gambar')->nullable();
+            $table->enum('is_aktif', ['true', 'false'])->default('true');
             $table->timestamps();
         });
     }

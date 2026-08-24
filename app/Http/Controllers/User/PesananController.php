@@ -12,6 +12,7 @@ class PesananController extends Controller
     public function index()
     {
         $pesanan = Pesanan::where('pengguna_id', Auth::id())
+            ->withCount('detailPesanan')
             ->latest()
             ->paginate(10);
 

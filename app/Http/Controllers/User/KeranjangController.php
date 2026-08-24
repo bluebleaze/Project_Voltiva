@@ -19,7 +19,10 @@ class KeranjangController extends Controller
 
         // Hitung total harga keseluruhan di keranjang
         $totalHarga = $keranjang->sum(function ($item) {
-            return ($item->produk?->harga ?? 0) * $item->jumlah;
+            if ($item->produk && $item->produk->is_aktif) {
+                return $item->produk->harga * $item->jumlah;
+            }
+            return 0;
         });
 
         return view('user.keranjang.index', compact('keranjang', 'totalHarga'));
@@ -34,6 +37,11 @@ class KeranjangController extends Controller
         ]);
 
         $produk = Produk::findOrFail($request->produk_id);
+
+        // Validasi status keaktifan produk
+        if (!$produk->is_aktif) {
+            return redirect()->back()->with('error', 'Produk ini sedang tidak tersedia.');
+        }
 
         // Validasi ketersediaan stok
         if ($produk->stok < $request->jumlah) {
@@ -79,6 +87,11 @@ class KeranjangController extends Controller
 
         $keranjang->load('produk');
             
+        // Validasi jika produk nonaktif
+        if (!$keranjang->produk || !$keranjang->produk->is_aktif) {
+            return redirect()->back()->with('error', 'Produk ini sudah tidak tersedia.');
+        }
+        
         // Validasi terhadap stok produk
         if ($keranjang->produk && $keranjang->produk->stok < $request->jumlah) {
             return redirect()->back()->with('error', 'Jumlah melebihi stok yang tersedia.');

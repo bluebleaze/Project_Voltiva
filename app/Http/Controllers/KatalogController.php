@@ -42,10 +42,16 @@ class KatalogController extends Controller
     // Menampilkan halaman detail dari satu produk
     public function show(Produk $produk)
     {
+        // Proteksi: Jika produk diakses via URL langsung tetapi statusnya nonaktif, lempar 404
+        if (!$produk->is_aktif) {
+            abort(404);
+        }
+
         $produk->load(['kategori', 'brand']);
 
-        // Rekomendasi produk terkait (kategori sama, kecuali produk yang sedang dilihat)
-        $produkTerkait = Produk::where('kategori_id', $produk->kategori_id)
+        // Rekomendasi produk terkait (kategori sama, masih aktif, dan bukan produk yang sedang dilihat)
+        $produkTerkait = Produk::where('is_aktif', true)
+            ->where('kategori_id', $produk->kategori_id)
             ->where('id', '!=', $produk->id)
             ->latest()
             ->take(4)

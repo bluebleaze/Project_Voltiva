@@ -50,6 +50,7 @@ class ProdukController extends Controller
             'harga'              => $request->harga,
             'stok'               => $request->stok,
             'gambar'             => $pathGambar,
+            'is_aktif'           => true,
         ]);
 
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -74,6 +75,7 @@ class ProdukController extends Controller
             'harga'              => 'required|numeric|min:0',
             'stok'               => 'required|integer|min:0',
             'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'is_aktif'           => 'required|boolean',
         ]);
 
         $data = [
@@ -83,6 +85,7 @@ class ProdukController extends Controller
             'deskripsi_produk'   => $request->deskripsi_produk,
             'harga'              => $request->harga,    
             'stok'               => $request->stok,
+            'is_aktif'           => $request->boolean('is_aktif'),
         ];
 
         // Jika ada gambar baru yang diunggah
@@ -102,12 +105,9 @@ class ProdukController extends Controller
     // Hapus produk
     public function destroy(Produk $produk)
     {
-        // Hapus file gambar dari storage
-        if ($produk->gambar && Storage::disk('public')->exists($produk->gambar)) {
-            Storage::disk('public')->delete($produk->gambar);
-        }
-
-        $produk->delete();
+        $produk->update([
+            'is_aktif' => false,
+        ]);
 
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus.');
     } 

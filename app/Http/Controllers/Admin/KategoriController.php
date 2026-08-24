@@ -70,7 +70,7 @@ class KategoriController extends Controller
     // Menghapus kategori
     public function destroy(Kategori $kategori)
     {
-        // Mencegah penghapusan jika masih ada produk yang terkait
+        // Mencegah penghapusan jika masih ada produk yang terkait (baik aktif maupun nonaktif)
         if ($kategori->produk()->exists()) {
             return redirect()->back()
                 ->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh beberapa produk.');

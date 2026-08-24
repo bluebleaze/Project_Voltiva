@@ -21,4 +21,16 @@ class Pesanan extends Model
     protected $casts = [
         'total_harga' => 'integer',
     ];
+
+    // Relasi Pesanan dibuat oleh seorang Pengguna
+    public function pengguna()
+    {
+        return $this->belongsTo(Pengguna::class, 'pengguna_id');
+    }
+
+    // Relasi Pesanan memiliki banyak rincian/detail barang
+    public function detailPesanan()
+    {
+        return $this->hasMany(DetailPesanan::class, 'pesanan_id');
+    }
 }

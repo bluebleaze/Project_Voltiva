@@ -21,4 +21,15 @@ class Keranjang extends Model
     protected $casts = [
         'jumlah' => 'integer',
     ];
+    // Relasi Item keranjang milik seorang Pengguna
+    public function pengguna()
+    {
+        return $this->belongsTo(Pengguna::class, 'pengguna_id');
+    }
+
+    // Relasi Item keranjang mengacu pada sebuah Produk
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
 }

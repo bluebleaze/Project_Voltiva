@@ -12,7 +12,8 @@ class BrandController extends Controller
     // 1. Tampilkan Daftar Brand
     public function index()
     {
-        $brands = Brand::latest()->paginate(10);
+        // withCount('produk') untuk menampilkan total barang per brand di view tanpa N+1 Query
+        $brands = Brand::withCount('produk')->latest()->paginate(10);
         return view('admin.brand.index', compact('brands'));
     }
 
@@ -27,10 +28,14 @@ class BrandController extends Controller
     {
         $request->validate([
             'nama_brand' => 'required|string|max:255|unique:tb_brand,nama_brand',
+        ],
+        [
+            'nama_brand.required' => 'Nama brand wajib diisi.',
+            'nama_brand.unique'   => 'Nama brand tersebut sudah ada.',
         ]);
 
         Brand::create([
-            'nama_brand' => $request->nama_brand,
+            'nama_brand' => trim($request->nama_brand),
             'slug'       => Str::slug($request->nama_brand),
         ]);
 
@@ -49,10 +54,14 @@ class BrandController extends Controller
     {
         $request->validate([
             'nama_brand' => 'required|string|max:255|unique:tb_brand,nama_brand,' . $brand->id,
+        ],
+        [
+            'nama_brand.required' => 'Nama brand wajib diisi.',
+            'nama_brand.unique'   => 'Nama brand tersebut sudah digunakan.',
         ]);
 
         $brand->update([
-            'nama_brand' => $request->nama_brand,
+            'nama_brand' => trim($request->nama_brand),
             'slug'       => Str::slug($request->nama_brand),
         ]);
 
@@ -63,10 +72,12 @@ class BrandController extends Controller
     // 6. Hapus Brand
     public function destroy(Brand $brand)
     {
-        if ($brand->produk()->count() > 0) {
+        // Menggunakan exists() yang jauh lebih ringan daripada count()
+        if ($brand->produk()->exists()) {
             return redirect()->route('admin.brand.index')
                 ->with('error', 'Brand tidak dapat dihapus karena masih memiliki produk terkait!');
         }
+        
         $brand->delete();
 
         return redirect()->route('admin.brand.index')

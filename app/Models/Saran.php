@@ -20,4 +20,10 @@ class Saran extends Model
     protected $casts = [
         'is_dibaca' => 'boolean',
     ];
+
+    // Relasi ke tabel induk Pengguna (tb_pengguna), Menghubungkan data seperti Pesanan, Keranjang, Saran dengan pemiliknya berdasarkan kolom 'pengguna_id'.
+    public function pengguna()
+    {
+        return $this->belongsTo(Pengguna::class, 'pengguna_id');
+    }
 }

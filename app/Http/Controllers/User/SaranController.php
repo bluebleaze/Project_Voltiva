@@ -20,6 +20,11 @@ class SaranController extends Controller
     {
         $request->validate([
             'pesan'  => 'required|string|min:10|max:1000',
+        ],
+        [
+            'pesan.required' => 'Pesan masukan wajib diisi.',
+            'pesan.min'      => 'Pesan masukan minimal berisi 10 karakter.',
+            'pesan.max'      => 'Pesan masukan maksimal 1000 karakter.',
         ]);
 
         Saran::create([

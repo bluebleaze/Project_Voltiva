@@ -25,9 +25,12 @@ class CheckoutController extends Controller
             return redirect()->route('keranjang.index')->with('error', 'Keranjang belanja Anda masih kosong.');
         }
 
-        // Hitung total harga belanjaan
+        // Hitung total harga belanjaan (Hanya untuk produk yang AKTIF)
         $totalHarga = $keranjang->sum(function ($item) {
-            return $item->produk->harga * $item->jumlah;
+            if ($item->produk && $item->produk->is_aktif) {
+                return $item->produk->harga * $item->jumlah;
+            }
+            return 0;
         });
 
         $pengguna = Auth::user();
@@ -60,7 +63,7 @@ class CheckoutController extends Controller
         try {
             DB::transaction(function () use ($request, $penggunaId, $keranjang) {
 
-                // 1. Validasi stok akhir & Hitung total harga
+                // 1. Validasi keaktifan, stok akhir & Hitung total harga
                 $totalHarga = 0;
                 $produkList = [];
 
@@ -68,6 +71,12 @@ class CheckoutController extends Controller
                     // Kunci data produk untuk menghindari race condition
                     $produk = Produk::lockForUpdate()->findOrFail($item->produk_id);
 
+                    // Validasi untuk Cegah checkout jika produk dinonaktifkan Admin
+                    if (!$produk->is_aktif) {
+                        throw new \Exception("Produk '{$produk->nama_produk}' sedang tidak tersedia/nonaktif.");
+                    }
+
+                    // Validasi jika Stok mencukupi
                     if ($produk->stok < $item->jumlah) {
                         throw new \Exception("Stok untuk produk '{$produk->nama_produk}' tidak mencukupi.");
                     }

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('tb_detail_pesanan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pesanan_id')->constrained('tb_pesanan')->onDelete('cascade');
-            $table->foreignId('produk_id')->nullable()->constrained('tb_produk')->onDelete('set null');
+            $table->foreignId('produk_id')->constrained('tb_produk')->onDelete('restrict');
             $table->string('nama_produk'); 
             $table->bigInteger('harga_satuan');
             $table->integer('jumlah');
