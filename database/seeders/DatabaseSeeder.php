@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Pengguna;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,29 +11,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Akun Admin Utama
-        Pengguna::create([
-            'nama_lengkap'     => 'Administrator',
-            'email'            => 'admin@contoh',
-            'sandi'            => 'sandi123',
-            'peran'            => 'admin',
-        ]);
-
-        // 2. Akun User / Pembeli Contoh
-        Pengguna::create([
-            'nama_lengkap'     => 'Pembeli Sampel',
-            'email'            => 'pengguna@contoh',
-            'sandi'            => 'sandi123',
-            'peran'            => 'pengguna',
-        ]);
-        
-        Pengguna::create([
-            'nama_lengkap'     => 'Ahmad',
-            'email'            => 'ahmad@contoh',
-            'sandi'            => 'ahoy',
-            'nomor_telepon'    => '000000',
-            'alamat'           => 'Jl. Pangeran Suriansyah',
-            'peran'            => 'admin',
+        // Panggil seeder lain yang Anda miliki di sini. Contoh:
+        $this->call([
+            PenggunaSeeder::class,
+            KategoriSeeder::class,
+            BrandSeeder::class,
+            ProdukSeeder::class,
+            PesananSeeder::class,
+            DetailPesananSeeder::class,
         ]);
     }
 }
