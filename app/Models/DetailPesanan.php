@@ -27,9 +27,5 @@ class DetailPesanan extends Model
         'subtotal'     => 'integer',
     ];
     
-    // Relasi Detail pesanan merujuk ke induk Pesanan
-    public function pesanan()
-    {
-        return $this->belongsTo(Pesanan::class, 'pesanan_id');
-    }
+
 }
