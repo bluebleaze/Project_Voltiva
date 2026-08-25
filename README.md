@@ -18,6 +18,13 @@ composer install
 ```
 
 ### 3. Ganti .env.exampe ke .env lalu configure
+#### Terminal Laragon & Windows CMD:
+```zsh
+copy .env.example .env
+code .env
+```
+
+#### Windows powershell, Linux, Macos & Git Bash:
 ```zsh
 cp .env.example .env
 code .env
