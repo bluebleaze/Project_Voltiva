@@ -15,7 +15,8 @@ class Pesanan extends Model
         'pengguna_id',
         'total_harga',
         'alamat_pengiriman',
-        'status',
+        'status_pembayaran',
+        'status_pengiriman',
     ];
 
     protected $casts = [

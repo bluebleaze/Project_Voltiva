@@ -13,7 +13,8 @@ return new class extends Migration
             $table->foreignId('pengguna_id')->constrained('tb_pengguna')->onDelete('cascade');
             $table->bigInteger('total_harga');
             $table->text('alamat_pengiriman');
-            $table->enum('status', ['pending', 'dibayar', 'selesai', 'dibatalkan'])->default('pending');
+            $table->enum('status_pembayaran', ['pending', 'dibayar', 'selesai', 'dibatalkan'])->default('pending');
+            $table->enum('status_pengiriman', ['dipersiapkan', 'dikirim', 'selesai', 'dibatalkan'])->default('dipersiapkan');
             $table->timestamps();
         });
     }

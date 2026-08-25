@@ -16,7 +16,8 @@ class PesananSeeder extends Seeder
             'pengguna_id'       => '1',
             'total_harga'       => '30000000',
             'alamat_pengiriman' => 'Jl. Pangeran Suriansyah No. 5',
-            'status'            => 'pending'
+            'status_pembayaran' => 'pending',
+            'status_pengiriman' => 'dipersiapkan'
         ]);
     }
 }
