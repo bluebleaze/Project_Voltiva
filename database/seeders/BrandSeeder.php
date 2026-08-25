@@ -14,7 +14,11 @@ class BrandSeeder extends Seeder
     {
         Brand::create([
             'nama_brand' => 'Asus',
-            'slug'       => 'Asus',
+            'slug'       => 'asus',
+        ]);
+        Brand::create([
+            'nama_brand' => 'Oppo',
+            'slug'       => 'oppo',
         ]);
     }
 }
