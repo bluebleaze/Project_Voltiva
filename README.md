@@ -1,6 +1,6 @@
 <p align="center">
     <img src="logo/Voltova5-nobg.png">
-</p>>
+</p>
 
 # Project Voltiva Laravel Test Project
 ## Cara Deploy oi
