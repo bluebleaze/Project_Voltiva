@@ -15,8 +15,9 @@ class KatalogController extends Controller
         $kategori = Kategori::all();
         $brand    = Brand::all();
 
-        // Query dasar: hanya mengambil produk yang aktif
-        $query = Produk::with(['kategori', 'brand']);
+        // Query dasar: pastikan HANYA mengambil produk yang AKTIF
+        $query = Produk::where('is_aktif', true)
+            ->with(['kategori', 'brand']);
 
         // Filter berdasarkan pencarian nama atau brand
         if ($request->filled('q')) {
@@ -36,7 +37,7 @@ class KatalogController extends Controller
         // Ambil data dengan paginasi (12 produk per halaman)
         $produk = $query->latest()->paginate(12)->withQueryString();
 
-        return view('katalog.index', compact('produk', 'kategori'));
+        return view('katalog.index', compact('produk', 'kategori', 'brand'));
     }
 
     // Menampilkan halaman detail dari satu produk

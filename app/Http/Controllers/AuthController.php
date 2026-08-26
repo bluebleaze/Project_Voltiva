@@ -71,7 +71,7 @@ class AuthController extends Controller
 
         $pengguna = Pengguna::create([
             'nama_lengkap'     =>  trim($request->nama_lengkap),
-            'email'             => trim($request->email),
+            'email'             => strtolower(trim($request->email)),
             'sandi'             => $request->sandi,
             'peran'             => 'pengguna',
         ]);

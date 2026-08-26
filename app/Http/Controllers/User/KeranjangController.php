@@ -17,7 +17,7 @@ class KeranjangController extends Controller
             ->where('pengguna_id', Auth::id())
             ->get();
 
-        // Hitung total harga keseluruhan di keranjang
+        // Hitung total harga keseluruhan di keranjang (Hanya produk yang ada & aktif)
         $totalHarga = $keranjang->sum(function ($item) {
             if ($item->produk && $item->produk->is_aktif) {
                 return $item->produk->harga * $item->jumlah;
@@ -58,7 +58,7 @@ class KeranjangController extends Controller
             $jumlahBaru = $itemKeranjang->jumlah + $request->jumlah;
 
             if ($produk->stok < $jumlahBaru) {
-                return redirect()->back()->with('error', 'Jumlah melebihi stok yang tersedia.');
+                return redirect()->back()->with('error', 'Jumlah total di keranjang melebihi stok yang tersedia.');
             }
 
             $itemKeranjang->update(['jumlah' => $jumlahBaru]);
@@ -77,6 +77,7 @@ class KeranjangController extends Controller
     // Memperbarui jumlah item di keranjang
     public function update(Request $request, Keranjang $keranjang)
     {
+        // Otorisasi kepemilikan item keranjang
         if ($keranjang->pengguna_id !== Auth::id()) {
             abort(403, 'Akses tidak diizinkan.');
         }
@@ -86,14 +87,14 @@ class KeranjangController extends Controller
         ]);
 
         $keranjang->load('produk');
-            
-        // Validasi jika produk nonaktif
+
+        // Validasi jika produk sudah terhapus atau non-aktif
         if (!$keranjang->produk || !$keranjang->produk->is_aktif) {
             return redirect()->back()->with('error', 'Produk ini sudah tidak tersedia.');
         }
-        
-        // Validasi terhadap stok produk
-        if ($keranjang->produk && $keranjang->produk->stok < $request->jumlah) {
+
+        // Validasi terhadap stok produk yang tersedia
+        if ($keranjang->produk->stok < $request->jumlah) {
             return redirect()->back()->with('error', 'Jumlah melebihi stok yang tersedia.');
         }
 
@@ -107,6 +108,7 @@ class KeranjangController extends Controller
     // Menghapus item dari keranjang
     public function destroy(Keranjang $keranjang)
     {
+        // Otorisasi kepemilikan item keranjang
         if ($keranjang->pengguna_id !== Auth::id()) {
             abort(403, 'Akses tidak diizinkan.');
         }

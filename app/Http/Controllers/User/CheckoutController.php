@@ -16,21 +16,22 @@ class CheckoutController extends Controller
     // Menampilkan halaman checkout (ringkasan belanja dan form alamat)
     public function index()
     {
-        $keranjang = Keranjang::with('produk')
+        // Ambil keranjang beserta produk yang aktif saja
+        $keranjang = Keranjang::whereHas('produk', function ($query) {
+                $query->where('is_aktif', true);
+            })
+            ->with('produk')
             ->where('pengguna_id', Auth::id())
             ->get();
 
-        // Jika keranjang kosong, kembalikan ke halaman keranjang
+        // Jika keranjang kosong (atau semua produk di dalamnya non-aktif), kembalikan
         if ($keranjang->isEmpty()) {
-            return redirect()->route('keranjang.index')->with('error', 'Keranjang belanja Anda masih kosong.');
+            return redirect()->route('keranjang.index')->with('error', 'Keranjang belanja Anda kosong atau produk tidak lagi tersedia.');
         }
 
-        // Hitung total harga belanjaan (Hanya untuk produk yang AKTIF)
+        // Hitung total harga belanjaan
         $totalHarga = $keranjang->sum(function ($item) {
-            if ($item->produk && $item->produk->is_aktif) {
-                return $item->produk->harga * $item->jumlah;
-            }
-            return 0;
+            return $item->produk->harga * $item->jumlah;
         });
 
         $pengguna = Auth::user();
@@ -44,8 +45,8 @@ class CheckoutController extends Controller
         $request->validate([
             'alamat_pengiriman' => 'required|string|max:500',
         ], [
-    'alamat_pengiriman.required' => 'Alamat pengiriman wajib diisi.',
-    'alamat_pengiriman.max'      => 'Alamat pengiriman terlalu panjang (maksimal 500 karakter).',
+            'alamat_pengiriman.required' => 'Alamat pengiriman wajib diisi.',
+            'alamat_pengiriman.max'      => 'Alamat pengiriman terlalu panjang (maksimal 500 karakter).',
         ]);
 
         $penggunaId = Auth::id();
@@ -59,24 +60,28 @@ class CheckoutController extends Controller
             return redirect()->route('keranjang.index')->with('error', 'Keranjang belanja Anda kosong.');
         }
 
-        // Gunakan DB Transaction untuk keamanan integritas data
+        // DB Transaction menjamin integritas data (atomicity)
         try {
             DB::transaction(function () use ($request, $penggunaId, $keranjang) {
 
-                // 1. Validasi keaktifan, stok akhir & Hitung total harga
                 $totalHarga = 0;
                 $produkList = [];
 
+                // 1. Validasi keaktifan & stok akhir dengan Pessimistic Locking
                 foreach ($keranjang as $item) {
-                    // Kunci data produk untuk menghindari race condition
-                    $produk = Produk::lockForUpdate()->findOrFail($item->produk_id);
+                    $produk = Produk::lockForUpdate()->find($item->produk_id);
 
-                    // Validasi untuk Cegah checkout jika produk dinonaktifkan Admin
+                    // Cegah jika produk sudah dihapus/tidak ada
+                    if (!$produk) {
+                        throw new \Exception("Salah satu produk di keranjang Anda sudah tidak ditemukan.");
+                    }
+
+                    // Cegah jika produk dinonaktifkan Admin
                     if (!$produk->is_aktif) {
                         throw new \Exception("Produk '{$produk->nama_produk}' sedang tidak tersedia/nonaktif.");
                     }
 
-                    // Validasi jika Stok mencukupi
+                    // Cegah jika stok kurang
                     if ($produk->stok < $item->jumlah) {
                         throw new \Exception("Stok untuk produk '{$produk->nama_produk}' tidak mencukupi.");
                     }
@@ -94,7 +99,8 @@ class CheckoutController extends Controller
                     'pengguna_id'       => $penggunaId,
                     'total_harga'       => $totalHarga,
                     'alamat_pengiriman' => $request->alamat_pengiriman,
-                    'status'            => 'pending', 
+                    'status_pembayaran' => 'pending',
+                    'status_pengiriman' => 'dipersiapkan',
                 ]);
 
                 // 3. Pindahkan item keranjang ke tb_detail_pesanan & Potong stok produk
@@ -103,7 +109,6 @@ class CheckoutController extends Controller
                     $jumlah = $data['jumlah'];
                     $subtotal = $produk->harga * $jumlah;
 
-                    // Buat detail pesanan
                     DetailPesanan::create([
                         'pesanan_id'   => $pesanan->id,
                         'produk_id'    => $produk->id,
@@ -113,7 +118,7 @@ class CheckoutController extends Controller
                         'subtotal'     => $subtotal,
                     ]);
 
-                    // Kurangi stok produk di katalog
+                    // Potong stok
                     $produk->decrement('stok', $jumlah);
                 }
 
@@ -124,7 +129,7 @@ class CheckoutController extends Controller
             return redirect()->route('pesanan.index')->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.');
 
         } catch (\Exception $e) {
-            // Jika terjadi kegagalan, transaksi otomatis di-rollback
+            // Jika ada kesalahan, transaksi otomatis dibatalkan (rollback)
             return redirect()->back()->with('error', 'Gagal memproses pesanan: ' . $e->getMessage());
         }
     }
