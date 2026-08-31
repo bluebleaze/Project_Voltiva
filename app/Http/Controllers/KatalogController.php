@@ -17,7 +17,7 @@ class KatalogController extends Controller
 
         // Query dasar: pastikan HANYA mengambil produk yang AKTIF
         $query = Produk::where('is_aktif', true)
-            ->with(['kategori', 'brand']);
+                ->with(['kategori', 'brand']);
 
         // Filter berdasarkan pencarian nama atau brand
         if ($request->filled('q')) {
