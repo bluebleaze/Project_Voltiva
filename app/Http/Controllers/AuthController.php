@@ -23,7 +23,7 @@ class AuthController extends Controller
         ], [
             'email.required'    => 'Email wajib diisi.',
             'email.email'       => 'Format email tidak valid.',
-            'sandi.required' => 'Password wajib diisi.',
+            'sandi.required'    => 'Password wajib diisi.',
         ]);
 
         // Cari pengguna berdasarkan email dan password teks biasa

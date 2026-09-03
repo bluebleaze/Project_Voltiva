@@ -43,7 +43,7 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'alamat_pengiriman' => 'required|string|max:500',
+            'alamat_pengiriman'          => 'required|string|max:500',
         ], [
             'alamat_pengiriman.required' => 'Alamat pengiriman wajib diisi.',
             'alamat_pengiriman.max'      => 'Alamat pengiriman terlalu panjang (maksimal 500 karakter).',
